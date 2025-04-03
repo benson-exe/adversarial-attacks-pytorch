@@ -127,7 +127,7 @@ def load_model(model_name: str,
             os.makedirs(model_dir_)
         if not os.path.isfile(model_path):
             download_gdrive(models[model_name]['gdrive_id'], model_path)
-        checkpoint = torch.load(model_path, map_location=torch.device('cpu'))
+        checkpoint = torch.load(model_path, map_location=torch.device('cpu'), weights_only=False)
 
         if 'Kireev2021Effectiveness' in model_name or model_name == 'Andriushchenko2020Understanding':
             checkpoint = checkpoint['last']  # we take the last model (choices: 'last', 'best')
@@ -159,7 +159,8 @@ def load_model(model_name: str,
             if not os.path.isfile('{}_m{}.pt'.format(model_path, i)):
                 download_gdrive(gid, '{}_m{}.pt'.format(model_path, i))
             checkpoint = torch.load('{}_m{}.pt'.format(model_path, i),
-                                    map_location=torch.device('cpu'))
+                                    map_location=torch.device('cpu'),
+                                    weights_only=False)
             try:
                 state_dict = rm_substr_from_state_dict(
                     checkpoint['state_dict'], 'module.')
